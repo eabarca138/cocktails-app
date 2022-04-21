@@ -1,4 +1,4 @@
-import {listData} from '../../service/listData'
+import {listData} from '../service/listData'
 import { StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
 
