@@ -2,24 +2,24 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons'; 
+import { Fontisto } from '@expo/vector-icons';
 
-import CocktailsNav from '../cocktails';
 import FavoritesNav from '../favorites';
-import MyCocktails from '../myCocktails';
+import MyCocktailsNav from '../myCocktails';
+import HomeNav from '../home';
 
 const BottomTabs = createBottomTabNavigator();
 
 const TabNavigator = () => {
     return (
-        <BottomTabs.Navigator initialRouteName='CocktailsTab' 
+        <BottomTabs.Navigator initialRouteName='HomeTab' 
             screenOptions={{
                 headerShown: false,
                 tabBarShowLabel: false, 
                 tabBarStyle: styles.tabBar,
             }}
             >
-            <BottomTabs.Screen name='CocktailsTab' component={CocktailsNav}
+            <BottomTabs.Screen name='HomeTab' component={HomeNav}
                 options={{
                     tabBarIcon: ({focused}) => (
                         <View style={styles.item}>
@@ -39,7 +39,7 @@ const TabNavigator = () => {
                     )
                 }}
                 />
-            <BottomTabs.Screen name='MyCocktailsTab' component={MyCocktails}
+            <BottomTabs.Screen name='MyCocktailsTab' component={MyCocktailsNav}
                 options={{
                     tabBarIcon: ({focused}) => (
                         <View style={styles.item}>
