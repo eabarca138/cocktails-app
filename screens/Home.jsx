@@ -1,39 +1,42 @@
-import { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 const Categories = ({navigation}) => {
-  const [categories, setCategories] = useState([]);
 
-  const getData = async () => {
-    try{
-    const req = await fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list")
-    const data = await req.json()
-    setCategories(data.drinks)
-  }
-  catch(e){
-    console.log(e)
-  }
-}
-useEffect(() => {
-  getData()
-}, [])
+  const liquors = [
+    "Gin",
+    "Rum",
+    "Light rum",
+    "Dark rum",
+    "Tequila",
+    "Vodka",
+    "Whiskey",
+    "Irish whiskey",
+    "Scotch",
+    "Blended whiskey",
+    "Pisco",
+    "Dry Vermouth",
+    "Aperol",
+  ];
 
 const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => {
-            navigation.navigate("CocktailList", item.strCategory);
-          }}>
-    <Text>{item.strCategory}</Text>
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => {
+      navigation.navigate("CocktailList", item);
+    }}
+  >
+    <Text>{item}</Text>
     <SimpleLineIcons name="arrow-right" size={15} color="gray" />
-    </TouchableOpacity>
+  </TouchableOpacity>
 );
 
   return (
     <FlatList
       style={styles.list}
-      data={categories}
+      data={liquors}
       renderItem={renderItem}
-      keyExtractor={(item) => item.strCategory}
+      keyExtractor={item => item}
     />
   );
 };
@@ -42,6 +45,7 @@ const styles = StyleSheet.create({
   list: {
     marginRight: 20,
     marginLeft: 20,
+    marginBottom: 115
   },
   item: {
     paddingBottom: 10,

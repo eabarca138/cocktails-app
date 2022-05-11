@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { useState, useEffect } from 'react';
 
 const CocktailList = ({ route, navigation}) => {
-  const category = route.params;
+  const strLiquor = route.params;
+  const liquor = strLiquor.replace(/\s+/g, '_')
   const [list, setList] = useState([])
 
   const getData = async () => {
     try {
-      const req = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${category}`);
+      const req = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${liquor}`);
       const data = await req.json();
       setList(data.drinks);
     } catch (e) {
@@ -20,20 +21,16 @@ const CocktailList = ({ route, navigation}) => {
 
 
   const renderItem = ({ item }) => (
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={() => {
+        navigation.navigate("CocktailDetail", item.strDrink);
+      }}>
         <Image style={styles.image} source={{ uri: item.strDrinkThumb }} />
-        <Text
-          style={styles.itemList}
-          onPress={() => {
-            navigation.navigate("CocktailDetail", item.strDrink);
-          }}
-        >
-          {item.strDrink}
-        </Text>
-      </View>
+        <Text style={styles.itemList}>{item.strDrink}</Text>
+      </TouchableOpacity>
   );
   return <View>
       <FlatList
+        style={styles.list}
         data={list}
         renderItem={renderItem}
         keyExtractor={(item) => item.idDrink}
@@ -48,6 +45,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomColor: '#cfcfcf',
     borderBottomWidth: 1,
+  },
+  list: {
+    marginBottom: 115
   },
   itemList: {
     fontSize: 15,

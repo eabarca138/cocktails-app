@@ -1,26 +1,22 @@
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
-import { useDispatch, useSelector } from "react-redux";
+import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
+import {  useSelector } from "react-redux";
 
-const Favorites = () => {
+const Favorites = ({navigation}) => {
   const favs = useSelector(state => state.favorites.favs)
-
+  
   const renderItem = ({ item }) => (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container}         onPress={() => {
+      navigation.navigate("CocktailDetail", item.strDrink);
+    }}>
       <Image style={styles.image} source={{ uri: item.strDrinkThumb }} />
-      <Text
-        style={styles.itemList}
-        onPress={() => {
-          navigation.navigate("CocktailDetail", item.strDrink);
-        }}
-      >
-        {item.strDrink}
-      </Text>
-    </View>
+      <Text style={styles.itemList}>{item.strDrink}</Text>
+    </TouchableOpacity>
   );
   return (
     <View className="container">
       <FlatList
         data={favs}
+        style={styles.list}
         renderItem={renderItem}
         keyExtractor={(item) => item.idDrink}
       />
@@ -29,10 +25,29 @@ const Favorites = () => {
 }
 
 const styles = StyleSheet.create({
+  container : {
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: 10,
+    borderBottomColor: '#cfcfcf',
+    borderBottomWidth: 1,
+  },
+  list: {
+    marginBottom: 115
+  },
+  itemList: {
+    fontSize: 15,
+    marginTop: 20,
+    marginLeft: 5,
+  },
   image: {
-    height: 100,
-    width:100,
+    marginLeft: 5,
+    width: 50,
+    height: 50,
     borderRadius:150
+  },
+  text: {
+    marginTop: 20,
   },
 });
 

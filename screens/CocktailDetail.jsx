@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, Image, View, Button } from 'react-native';
+import DetailData from '../components/DetailData'
+
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { AntDesign } from '@expo/vector-icons'; 
 import { useDispatch, useSelector } from "react-redux";
 import { addFav, removeFav } from "../store/actions/favs.action";
 
@@ -15,14 +18,16 @@ const CocktailDetail = ({route}) => {
         const req = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktailName}`);
         const data = await req.json();
         setCocktail(data.drinks[0]);
-        setLoader(true)
       } catch (e) {
         console.log(e);
+      }
+      finally {
+        setLoader(true)
       }
     };
     useEffect(() => {
       getData();
-    }, []);
+    }, [cocktailName]);
 
     const dispatch = useDispatch();
     const handlerAddFav = (cocktail) => {
@@ -36,44 +41,44 @@ const CocktailDetail = ({route}) => {
     const isFav = favs.find(fav => fav.idDrink === cocktail.idDrink)
 
   return (
-    <View>
-      <Text style={styles.text}>{cocktail.strDrink}</Text>
-      <Image style={styles.image} source={{ uri: cocktail.strDrinkThumb }} />
+    <View style={styles.container}>
+      <View style={styles.header}>
+      <Text style={styles.title}>{cocktail.strDrink}</Text>
 { loader &&
     <View>
     { isFav ?
-      <Button
-      onPress={() => handlerRemoveFav(cocktail)}
-      style={styles.button}
-      title="REMOVE FAVS"
-      color="#FF0000"
-      accessibilityLabel="REMOVE FAVS"
-      />
+      <TouchableOpacity onPress={() => handlerRemoveFav(cocktail)}><AntDesign name="star" size={30} color="lightblue" /></TouchableOpacity>
       :
-      <Button
-        onPress={() => handlerAddFav(cocktail)}
-        style={styles.button}
-        title="ADD FAVS"
-        color="#00FF00"
-        accessibilityLabel="ADD FAVS"
-      />
+      <TouchableOpacity onPress={() => handlerAddFav(cocktail)}><AntDesign name="staro" size={30} color="black" /></TouchableOpacity>
     }
     </View>
     }
+    </View>
+
+    <DetailData cocktail={cocktail}/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-    image: {
-      height: 200,
-      width:200,
-      borderRadius:150
-    },
-    text: {
-        fontSize: 30
-    }
-  });
-  
+  container: {
+    marginTop: 10,
+    marginLeft: 10,
+    marginRight:10,
+    marginBottom: 115
+    
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center'
+    
+  },
+  title: {
+    fontSize: 20,
+    alignSelf: 'center'
+  }
+});
+
 
 export default CocktailDetail
