@@ -1,20 +1,32 @@
 import camera from '../assets/camera.png'; 
 import imageGallery from '../assets/image-gallery.png'; 
 import { useState } from 'react';
-import { Modal, Button, View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Modal, Button, View, Text, TextInput, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useMyCocktailsContext } from "../context/MyCocktailsContext";
+import { v4 as uuidv4 } from 'uuid';
 
 const ModalForm = ({modalVisible, closeModal}) => {
     const [title, setTitle] = useState('')
     const [instructions, setInstructions] = useState('')
     const [ pickerURI, setPickerURI ] = useState(null);
-    const [ingredient, setIngredient] = useState('')
-    const [measure, setMeasure] = useState('')
+    const [count, setCount] = useState(1)
+    const [inputs, setInputs] = useState([0])
+
+    const [firstIngredient, setfirstIngredient] = useState('')
+    const [firstMeasure, setfirstMeasure] = useState('')
+    const [ingredients, setIngredients] = useState([])
+    const [measures, setMeasures] = useState({})
     const { onAdd } = useMyCocktailsContext()
 
     const handlerCloseModal = () => {
+        setInputs([0])
+        setCount('')
+        setfirstIngredient('')
+        setfirstMeasure('')
+        setIngredients('')
+        setMeasures('')
         setTitle('')
         setInstructions('')
         setPickerURI(null)
@@ -22,7 +34,7 @@ const ModalForm = ({modalVisible, closeModal}) => {
     }
     
     const handlerOnAdd = () => {
-        onAdd(title, instructions, pickerURI)
+        onAdd(title, instructions, pickerURI, ingredients, measures) 
         handlerCloseModal()
     }
 
@@ -74,6 +86,41 @@ const ModalForm = ({modalVisible, closeModal}) => {
       setPickerURI(image.uri);
     };
 
+    const addInput = () => {
+      setCount(count + 1)
+      setInputs([...inputs, count])
+    }
+    
+    const handleChangeI = (e) => {
+      console.log(e.target.value);
+      console.log(e.target.name);
+      const value = e.target.value;
+
+      const ingredient = {[e.target.name] : value}
+      setIngredients([...ingredients, ingredient]);
+    }
+    const handleChangeM = (e) => {
+      const value = e.target.value;
+      setMeasures({
+        ...measures,
+        [e.target.name]: value
+      });
+    }
+    const renderItem = (i, index) => (
+      <View style={styles.ingredientsContainer}>
+      <TextInput
+        style={styles.ingredientsInput}
+        placeholder="Ingredient"
+        onChange={handleChangeI} 
+      />
+      <TextInput
+        style={styles.ingredientsInput}
+        placeholder="Measure"
+        onChange={handleChangeM}
+      />
+      </View>
+    );
+
   return (
     <Modal animationType="fade" transparent={false} visible={modalVisible}>
       <View style={styles.modal}>
@@ -110,21 +157,17 @@ const ModalForm = ({modalVisible, closeModal}) => {
         </View>
 
         <View style={styles.ingredientsContainer}>
-        <TextInput
-          style={styles.ingredientsInput}
-          placeholder="Ingredient"
-          value={ingredient}
-          onChangeText={setIngredient}
-        />
-        <TextInput
-          style={styles.ingredientsInput}
-          placeholder="Measure"
-          value={measure}
-          onChangeText={setMeasure}
-        />
-        <TouchableOpacity style={styles.addBtn} >
+
+        <FlatList
+        data={inputs}
+        style={styles.list}
+        renderItem={renderItem}
+        keyExtractor={(i) => i}
+      />
+        <TouchableOpacity style={styles.addBtn} onPress={addInput}>
         <Ionicons name="add-circle" size={30} color="lightblue" />
         </TouchableOpacity>
+
         </View>
 
 
@@ -168,14 +211,14 @@ const styles = StyleSheet.create({
   },
   ingredientsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
     marginBottom: 30,
     width:'80%'
   },
   ingredientsInput: {
     borderBottomWidth: 1,
-    width: '40%',
+    width: '45%',
     padding: 3
   },
   img: {
@@ -196,6 +239,9 @@ photo: {
     text: {
       textAlign: 'center',
       marginTop: 10     
+  },
+  list: {
+    height: 200
   },
   buttons: {
       flexDirection: 'row',

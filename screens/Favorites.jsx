@@ -1,8 +1,16 @@
+import { useEffect } from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
-import {  useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
+import * as favsAction from '../store/actions/favs.action';
 
 const Favorites = ({navigation}) => {
+  const dispatch = useDispatch();
   const favs = useSelector(state => state.favorites.favs)
+  console.log(favs);
+
+  useEffect(() => {
+    dispatch(favsAction.loadFavs())
+}, [])
   
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.container}         onPress={() => {
@@ -18,7 +26,7 @@ const Favorites = ({navigation}) => {
         data={favs}
         style={styles.list}
         renderItem={renderItem}
-        keyExtractor={(item) => item.idDrink}
+        keyExtractor={(item,i ) => i}
       />
     </View>
   );
