@@ -5,9 +5,8 @@ import { LOAD_FAVS } from "../actions/favs.action";
 const initialState = {
     favs: [],
 }
-
 const FavsReducer = (state = initialState, action) => {
-    const isFav = state.favs.find(fav => fav.dbID == action.payload.dbID)
+    const isFav = state.favs.find(fav => fav.idDrink == action.payload.idDrink)
     switch (action.type) {
         case ADD_FAV: {
             if (!isFav) {
@@ -16,12 +15,12 @@ const FavsReducer = (state = initialState, action) => {
             return state
         }
         case LOAD_FAVS:
-            console.log(action.payload);
             return {
                 ...state,
                 favs: action.payload.map( item => {
                     obj = {}
-                    obj.dbID = item.dbID,
+                    obj.dbID = item.id,
+                    obj.idDrink = item.idDrink,
                     obj.strDrink= item.strDrink,
                     obj.strDrinkThumb= item.strDrinkThumb
                     return obj
@@ -29,7 +28,7 @@ const FavsReducer = (state = initialState, action) => {
             }
         case REMOVE_FAV: {
             if (isFav) {
-                return { ...state,  favs: state.favs.filter(fav => fav.dbID !== action.payload.dbID) }
+                return { ...state,  favs: state.favs.filter(fav => fav.idDrink != action.payload.idDrink) }
             }
             return state
         }

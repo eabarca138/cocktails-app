@@ -1,11 +1,11 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('favs.db');
+const db = SQLite.openDatabase('dbfavs.db');
 
 export const init = () => {
     const promise = new Promise( (resolve, reject) => {
         db.transaction( (tx) => {
-            tx.executeSql("CREATE TABLE IF NOT EXISTS favs (dbID INTEGER PRIMARY KEY NOT NULL strDrink TEXT NOT NULL, strDrinkThumb TEXT NOT NULL);",
+            tx.executeSql("CREATE TABLE IF NOT EXISTS dbfavs (id INTEGER PRIMARY KEY NOT NULL, strDrink TEXT NOT NULL, strDrinkThumb TEXT NOT NULL, idDrink INTEGER NOT NULL);",
             [],
             () => resolve(),
             (_, err) => reject(err)
@@ -16,12 +16,12 @@ export const init = () => {
     return promise;
 }
 
-export const insertFav = (strDrink, strDrinkThumb) => {
+export const insertFav = (strDrink, strDrinkThumb, idDrink) => {
     const promise = new Promise( (resolve, reject) => {
         db.transaction( tx => {
             tx.executeSql(
-                "INSERT INTO favs (strDrink, strDrinkThumb) values (?, ?);",
-                [strDrink, strDrinkThumb],
+                "INSERT INTO dbfavs (strDrink, strDrinkThumb, idDrink) values (?, ?, ?);",
+                [strDrink, strDrinkThumb, idDrink],
                 (_, result) => resolve(result),
                 (_, err) => reject(err)
             )
@@ -35,7 +35,7 @@ export const fetchFavs = () => {
     const promise = new Promise((resolve, reject) => {
         db.transaction( tx => {
             tx.executeSql(
-                "SELECT * FROM favs;",
+                "SELECT * FROM dbfavs;",
                 [],
                 (_, result) => resolve(result),
                 (_,err) => reject(err)
@@ -45,12 +45,12 @@ export const fetchFavs = () => {
     return promise;
 }
 
-export const deleteFav = (dbID) => {
+export const deleteFav = (idDrink) => {
     const promise = new Promise( (resolve, reject) => {
         db.transaction( tx => {
             tx.executeSql(
-                "DELETE FROM favs WHERE id = ?",
-                [dbID],
+                "DELETE FROM dbfavs WHERE idDrink = ?",
+                [idDrink],
                 (_, result) => resolve(result),
                 (_,err) => reject(err)
             )

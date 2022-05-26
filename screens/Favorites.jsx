@@ -6,7 +6,6 @@ import * as favsAction from '../store/actions/favs.action';
 const Favorites = ({navigation}) => {
   const dispatch = useDispatch();
   const favs = useSelector(state => state.favorites.favs)
-  console.log(favs);
 
   useEffect(() => {
     dispatch(favsAction.loadFavs())

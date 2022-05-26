@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DetailData from '../components/DetailData'
 
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
 import { useDispatch, useSelector } from "react-redux";
 import { addFav, removeFav } from "../store/actions/favs.action";
@@ -15,6 +15,7 @@ const CocktailDetail = ({route}) => {
 
     const getData = async () => {
       try {
+        setLoader(false)
         const req = await fetch(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${cocktailName}`);
         const data = await req.json();
         setCocktail(data.drinks[0]);
@@ -34,17 +35,18 @@ const CocktailDetail = ({route}) => {
       dispatch(addFav(cocktail));
     };
     const handlerRemoveFav = (cocktail) => {
-      dispatch(removeFav(cocktail));
+      dispatch(removeFav(cocktail)); 
     };
 
     const favs = useSelector(state => state.favorites.favs)
-    const isFav = favs.find(fav => fav.idDrink === cocktail.idDrink)
+    const isFav = favs.find(fav => fav.idDrink == cocktail.idDrink)
 
   return (
+    <View>
+{ !loader ? <ActivityIndicator size="large" color="#042452" style={styles.loader}/> :
     <View style={styles.container}>
       <View style={styles.header}>
       <Text style={styles.title}>{cocktail.strDrink}</Text>
-{ loader &&
     <View>
     { isFav ?
       <TouchableOpacity onPress={() => handlerRemoveFav(cocktail)}><AntDesign name="star" size={30} color="lightblue" /></TouchableOpacity>
@@ -52,10 +54,11 @@ const CocktailDetail = ({route}) => {
       <TouchableOpacity onPress={() => handlerAddFav(cocktail)}><AntDesign name="staro" size={30} color="black" /></TouchableOpacity>
     }
     </View>
-    }
     </View>
 
     <DetailData cocktail={cocktail}/>
+    </View>
+  }
     </View>
   );
 }
@@ -77,6 +80,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     alignSelf: 'center'
+  },
+  loader: {
+    width: '100%',
+    height: '80%'
   }
 });
 

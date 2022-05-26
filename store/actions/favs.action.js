@@ -10,8 +10,8 @@ export const REMOVE_FAV = 'REMOVE_FAV'
 export const addFav = cocktail => {
   return async (dispatch) => {
     try {
-        const result = await insertFav(cocktail.strDrink, cocktail.strDrinkThumb);
-        cocktail.dbID = result.insertId
+        const result = await insertFav(cocktail.strDrink, cocktail.strDrinkThumb, cocktail.idDrink);
+        cocktail.id = result.insertId
 
       dispatch({ type: ADD_FAV, payload: cocktail });
     } catch (err) {
@@ -35,7 +35,7 @@ export const loadFavs = () => {
 export const removeFav = cocktail => {
         return async dispatch => {
             try {
-                const result = await deleteFav(cocktail.dbID);
+                const result = await deleteFav(cocktail.idDrink);
                 dispatch({type: REMOVE_FAV, payload: cocktail});
             } catch(err) {
                 throw err;

@@ -5,36 +5,59 @@ import { Modal, Button, View, Text, TextInput, StyleSheet, TouchableOpacity, Ima
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useMyCocktailsContext } from "../context/MyCocktailsContext";
-import { v4 as uuidv4 } from 'uuid';
 
 const ModalForm = ({modalVisible, closeModal}) => {
     const [title, setTitle] = useState('')
     const [instructions, setInstructions] = useState('')
-    const [ pickerURI, setPickerURI ] = useState(null);
-    const [count, setCount] = useState(1)
-    const [inputs, setInputs] = useState([0])
+    const [ pickerURI, setPickerURI ] = useState('');
+    const [ingredients, setIngredients] = useState([
+      {strIngredient: '',
+      strMeasure: '',
+      }
+    ])
+    const [error, setError] = useState('')
 
-    const [firstIngredient, setfirstIngredient] = useState('')
-    const [firstMeasure, setfirstMeasure] = useState('')
-    const [ingredients, setIngredients] = useState([])
-    const [measures, setMeasures] = useState({})
     const { onAdd } = useMyCocktailsContext()
 
     const handlerCloseModal = () => {
-        setInputs([0])
-        setCount('')
-        setfirstIngredient('')
-        setfirstMeasure('')
-        setIngredients('')
-        setMeasures('')
-        setTitle('')
-        setInstructions('')
-        setPickerURI(null)
+      setTitle('')
+      setInstructions('')
+      setPickerURI('')
+      setIngredients([
+        {strIngredient: '',
+        strMeasure: '',
+        }
+      ])
+      setError('')
         closeModal()
     }
     
     const handlerOnAdd = () => {
-        onAdd(title, instructions, pickerURI, ingredients, measures) 
+      const regex = new RegExp(/^$|\s+/)
+
+      if (regex.test(title)) {
+        setError('Name required');
+        return
+      }
+      if (regex.test(instructions)) {
+        setError('Instructions required');
+        return
+      }
+      if (regex.test(pickerURI)) {
+        setError('Image required');
+        return
+      }
+      if (regex.test(ingredients[0].strIngredient)) {
+        setError('at least one ingredient is required');
+        return
+      }
+      if (regex.test(ingredients[0].strMeasure)) {
+        setError('measure ingredient required');
+        return
+      }
+
+
+        onAdd(title, instructions, pickerURI, ingredients) 
         handlerCloseModal()
     }
 
@@ -87,39 +110,38 @@ const ModalForm = ({modalVisible, closeModal}) => {
     };
 
     const addInput = () => {
-      setCount(count + 1)
-      setInputs([...inputs, count])
+      setIngredients([...ingredients, {strIngredient: '', strMeasure:''}])
     }
     
-    const handleChangeI = (e) => {
-      console.log(e.target.value);
-      console.log(e.target.name);
-      const value = e.target.value;
+    const handleChangeI = (newIngredient, index) => {
+      const newIngredients = [...ingredients]
+      newIngredients[index].strIngredient = newIngredient;
+      setIngredients(newIngredients);
+    }
+    const handleChangeM = (newMeasure, index) => {
+      const newMeasures = [...ingredients]
+      newMeasures[index].strMeasure = newMeasure;
+      setIngredients(newMeasures);
 
-      const ingredient = {[e.target.name] : value}
-      setIngredients([...ingredients, ingredient]);
     }
-    const handleChangeM = (e) => {
-      const value = e.target.value;
-      setMeasures({
-        ...measures,
-        [e.target.name]: value
-      });
-    }
-    const renderItem = (i, index) => (
+    const renderItem = ({item, index}) => {
+      return(
       <View style={styles.ingredientsContainer}>
       <TextInput
+      
+      value={item.ing}
         style={styles.ingredientsInput}
         placeholder="Ingredient"
-        onChange={handleChangeI} 
+        onChangeText={(e) => handleChangeI(e, index)}
       />
       <TextInput
+      value={item.mea}
         style={styles.ingredientsInput}
         placeholder="Measure"
-        onChange={handleChangeM}
+        onChangeText={(e) => handleChangeM(e, index)}
       />
-      </View>
-    );
+      </View>)
+}
 
   return (
     <Modal animationType="fade" transparent={false} visible={modalVisible}>
@@ -137,54 +159,57 @@ const ModalForm = ({modalVisible, closeModal}) => {
           onChangeText={setInstructions}
         />
 
-        <Text style={styles.text}>Choose your cocktail photo:</Text>
+        <Text style={styles.text}>Choose your cocktail Image:</Text>
 
         <View>
-            {!pickerURI ?
-          <View style={styles.photoContainer}>
-            <TouchableOpacity onPress={handlerOpenGallery}>
-              <Image style={styles.img} source={imageGallery} />
+          {!pickerURI ? (
+            <View style={styles.photoContainer}>
+              <TouchableOpacity onPress={handlerOpenGallery}>
+                <Image style={styles.img} source={imageGallery} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handlerTakeImage}>
+                <Image style={styles.img} source={camera} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity onPress={() => setPickerURI('')}>
+              <Image style={styles.photo} source={{ uri: pickerURI }} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handlerTakeImage}>
-              <Image style={styles.img} source={camera} />
-            </TouchableOpacity>
-          </View>
-            :
-          <TouchableOpacity onPress={()=>setPickerURI(null)}>
-            <Image style={styles.photo} source={{ uri: pickerURI }} />
-          </TouchableOpacity>
-          }
+          )}
         </View>
 
         <View style={styles.ingredientsContainer}>
-
-        <FlatList
-        data={inputs}
-        style={styles.list}
-        renderItem={renderItem}
-        keyExtractor={(i) => i}
-      />
-        <TouchableOpacity style={styles.addBtn} onPress={addInput}>
-        <Ionicons name="add-circle" size={30} color="lightblue" />
-        </TouchableOpacity>
-
+          <FlatList
+            data={ingredients}
+            style={styles.list}
+            renderItem={renderItem}
+            keyExtractor={(item, i) => i}
+          />
+          <TouchableOpacity onPress={addInput}>
+            <Ionicons name="add-circle" size={30} color="lightblue" />
+          </TouchableOpacity>
         </View>
 
+        {!!error && (
+          <Text style={{ color: "red", margin: 15 }}>{error}</Text>
+        )}
 
-    <View style={styles.buttons}>
-        <Button
-          onPress={handlerCloseModal}
-          title="Dismiss"
-          color="#808080"
-          accessibilityLabel="Descartar"
-        />
-        <Button
-          onPress={handlerOnAdd}
-          title="Add"
-          color="#23bf00"
-          accessibilityLabel="add"
-        />
-    </View>
+        <View style={styles.buttons}>
+          <Button
+            style={styles.btn}
+            onPress={handlerCloseModal}
+            title="Dismiss"
+            color="#808080"
+            accessibilityLabel="dismiss"
+          />
+          <Button
+            style={styles.btn}
+            onPress={handlerOnAdd}
+            title="Add"
+            color="#23bf00"
+            accessibilityLabel="add"
+          />
+        </View>
       </View>
     </Modal>
   );
@@ -214,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'space-around',
     marginBottom: 30,
-    width:'80%'
+    width:'95%'
   },
   ingredientsInput: {
     borderBottomWidth: 1,
@@ -244,9 +269,15 @@ photo: {
     height: 200
   },
   buttons: {
+      width:'100%',
       flexDirection: 'row',
-      justifyContent: 'space-evenly'
+      justifyContent: 'space-evenly',
   },
+  btn : {
+    borderRadius:20,
+    color: 'red',
+    width: '100%',
+  }
 });
 
 export default ModalForm
