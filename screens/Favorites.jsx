@@ -20,7 +20,7 @@ const Favorites = ({navigation}) => {
     </TouchableOpacity>
   );
   return (
-    <View className="container">
+    <View style={styles.bg}>
       <FlatList
         data={favs}
         style={styles.list}
@@ -36,16 +36,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
     paddingBottom: 10,
-    borderBottomColor: '#cfcfcf',
     borderBottomWidth: 1,
+    borderBottomColor: '#cfcfcf',
+    backgroundColor:'#354b63',
   },
-  list: {
-    marginBottom: 115
+  bg: {
+    height:'100%',
+    marginBottom: 50,
+    backgroundColor:'#354b63',
   },
   itemList: {
     fontSize: 15,
     marginTop: 20,
     marginLeft: 5,
+    color:'#dce3de'
   },
   image: {
     marginLeft: 5,

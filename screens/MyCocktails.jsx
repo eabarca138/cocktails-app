@@ -34,11 +34,11 @@ const MyCocktails = ({navigation}) => {
     </View>
   );
   return (
-    <View>
+    <View style={styles.bg}>
       <View>
         <TouchableOpacity style={styles.addBtn} onPress={() => openModal()}>
           <Ionicons name="add-circle" size={30} color="green" />
-          <Text>Add new cocktail</Text>
+          <Text style={styles.text}>Add new cocktail</Text>
         </TouchableOpacity>
       </View>
 
@@ -55,6 +55,10 @@ const MyCocktails = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+  bg: {
+    height:'100%',
+    backgroundColor: '#354b63'
+  },
   addBtn: {
     marginTop: 10,
     width: '45%',
@@ -63,6 +67,9 @@ const styles = StyleSheet.create({
       alignItems:'flex-start',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  text: {
+    color:'#dce3de'
   },
     list: {
       marginBottom: 115
@@ -90,6 +97,7 @@ const styles = StyleSheet.create({
     name: {
       marginLeft: 5,
       fontSize: 15,
+      color:'#dce3de'
     },
     deleteBtn: {
       marginRight: 15

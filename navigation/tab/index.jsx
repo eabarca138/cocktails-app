@@ -58,18 +58,16 @@ const styles = StyleSheet.create({
         shadowColor: '#7f5df0',
         shadowOffset: { width: 0, height: 10},
         shadowOpacity: 0.25,
-        shadowRadius: 0.25,
         elevation: 5,
         position: 'absolute',
-        bottom: 25,
-        left: 20,
-        right: 20, 
-        borderRadius: 15,
-        height: 90,
+        height: 50,
         backgroundColor: '#ccc'
     },
     item: {
         flex: 1,
+        width:'100%',
+        borderRightWidth: 1,
+        borderColor: '#9da3a1',
         justifyContent: 'center',
         alignItems: 'center',
     }

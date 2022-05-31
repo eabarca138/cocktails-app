@@ -1,4 +1,4 @@
-import { StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 
 const Categories = ({navigation}) => {
@@ -26,22 +26,27 @@ const renderItem = ({ item }) => (
       navigation.navigate("CocktailList", item);
     }}
   >
-    <Text>{item}</Text>
+    <Text style={styles.text}>{item}</Text>
     <SimpleLineIcons name="arrow-right" size={15} color="gray" />
   </TouchableOpacity>
 );
 
   return (
+    <View style={styles.container}>
     <FlatList
       style={styles.list}
       data={liquors}
       renderItem={renderItem}
       keyExtractor={item => item}
     />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor:'#354b63'
+  },
   list: {
     marginRight: 20,
     marginLeft: 20,
@@ -53,7 +58,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#cfcfcf',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+  },
+  text: {
+    color:"#dce3de"
   }
 });
 

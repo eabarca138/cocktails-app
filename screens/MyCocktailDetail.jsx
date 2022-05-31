@@ -15,7 +15,11 @@ const MyCocktailDetail = ({route}) => {
 const styles = StyleSheet.create({
     title: {
       fontSize: 20,
-      alignSelf: 'center'
+      textAlign: 'center',
+      backgroundColor: '#223040',
+      color:'#dce3de',
+      width: '100%'
+      
     }
   });
 

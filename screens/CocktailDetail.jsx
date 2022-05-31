@@ -43,15 +43,15 @@ const CocktailDetail = ({route}) => {
 
   return (
     <View>
-{ !loader ? <ActivityIndicator size="large" color="#042452" style={styles.loader}/> :
+{ !loader ? <ActivityIndicator size="large" color="#dce3de" style={styles.loader}/> :
     <View style={styles.container}>
       <View style={styles.header}>
       <Text style={styles.title}>{cocktail.strDrink}</Text>
     <View>
     { isFav ?
-      <TouchableOpacity onPress={() => handlerRemoveFav(cocktail)}><AntDesign name="star" size={30} color="lightblue" /></TouchableOpacity>
+      <TouchableOpacity onPress={() => handlerRemoveFav(cocktail)}><AntDesign name="star" size={30} color="yellow" /></TouchableOpacity>
       :
-      <TouchableOpacity onPress={() => handlerAddFav(cocktail)}><AntDesign name="staro" size={30} color="black" /></TouchableOpacity>
+      <TouchableOpacity onPress={() => handlerAddFav(cocktail)}><AntDesign name="staro" size={30} color="#dce3de" /></TouchableOpacity>
     }
     </View>
     </View>
@@ -65,25 +65,27 @@ const CocktailDetail = ({route}) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
-    marginLeft: 10,
-    marginRight:10,
-    marginBottom: 115
-    
+    marginBottom: 115,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignContent: 'center'
+    alignContent: 'center',
+    backgroundColor: '#223040',
+    paddingLeft: 10,
+    paddingRight:10,
+    paddingTop:10,
     
   },
   title: {
+    color:'#dce3de',
     fontSize: 20,
     alignSelf: 'center'
   },
   loader: {
     width: '100%',
-    height: '80%'
+    height: '100%',
+    backgroundColor:'#354b63'
   }
 });
 

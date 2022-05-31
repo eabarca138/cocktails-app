@@ -5,6 +5,7 @@ import { Modal, Button, View, Text, TextInput, StyleSheet, TouchableOpacity, Ima
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useMyCocktailsContext } from "../context/MyCocktailsContext";
+import { color } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 const ModalForm = ({modalVisible, closeModal}) => {
     const [title, setTitle] = useState('')
@@ -33,7 +34,7 @@ const ModalForm = ({modalVisible, closeModal}) => {
     }
     
     const handlerOnAdd = () => {
-      const regex = new RegExp(/^$|\s+/)
+      const regex = new RegExp(/^\s*$/)
 
       if (regex.test(title)) {
         setError('Name required');
@@ -133,30 +134,35 @@ const ModalForm = ({modalVisible, closeModal}) => {
         style={styles.ingredientsInput}
         placeholder="Ingredient"
         onChangeText={(e) => handleChangeI(e, index)}
+        placeholderTextColor="#dce3de"
       />
       <TextInput
       value={item.mea}
         style={styles.ingredientsInput}
         placeholder="Measure"
         onChangeText={(e) => handleChangeM(e, index)}
+        placeholderTextColor="#dce3de"
       />
       </View>)
 }
 
   return (
-    <Modal animationType="fade" transparent={false} visible={modalVisible}>
+    <Modal animationType="slide" transparent={false} visible={modalVisible}>
+      <View style={styles.bg}>
       <View style={styles.modal}>
         <TextInput
           style={styles.textInput}
           placeholder="Name"
           value={title}
           onChangeText={setTitle}
-        />
+          placeholderTextColor="#dce3de"
+          />
         <TextInput
           style={styles.textInput}
           placeholder="Instructions"
           value={instructions}
           onChangeText={setInstructions}
+          placeholderTextColor="#dce3de"
         />
 
         <Text style={styles.text}>Choose your cocktail Image:</Text>
@@ -211,28 +217,33 @@ const ModalForm = ({modalVisible, closeModal}) => {
           />
         </View>
       </View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  bg: {
+    backgroundColor: '#223040',
+    height:'100%'
+  },
   modal: {
     alignItems: "center",
-    marginTop: 100,
-    marginLeft: "auto",
-    marginRight: "auto",
-    width: "90%",
+    paddingLeft: 20,
+    paddingRight: 20,
     padding: 20,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFFF",
-    borderRadius: 20,
-    borderWidth: 1,
+    borderBottomLeftRadius:20,
+    borderBottomRightRadius:20,
+    backgroundColor:'#354b63'
   },
   textInput: {
     borderBottomWidth: 1,
+    borderColor:'grey',
     width: '80%',
-    padding: 3
+    padding: 3,
+    color:"#dce3de"
   },
   ingredientsContainer: {
     flexDirection: 'row',
@@ -244,7 +255,9 @@ const styles = StyleSheet.create({
   ingredientsInput: {
     borderBottomWidth: 1,
     width: '45%',
-    padding: 3
+    padding: 3,
+    borderColor:'grey',
+    color: "#dce3de"
   },
   img: {
     height: 60,
@@ -263,7 +276,9 @@ photo: {
     },
     text: {
       textAlign: 'center',
-      marginTop: 10     
+      marginTop: 10,
+      color:'#dce3de'
+
   },
   list: {
     height: 200
